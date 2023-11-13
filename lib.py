@@ -107,10 +107,12 @@ class BagCode:
         image = Image.new('RGB', (width, height), 'white')
         background_image = self.__make_background_image(width, height)
         qr_image = self.__make_qr_image(self.alphanumeric_code)
+        qr_image = qr_image.resize((int(216 * 0.9), int(216 * 0.9)))
+
         text_image = self.__make_text_image(self.alphanumeric_code, width, int(height/2.5))
 
         image.paste(background_image, (0, 0))
-        qr_image_offset = int((width - qr_image.pixel_size) / 2), int((height/2.5 + qr_image.pixel_size - 30) / 2)
+        qr_image_offset = int((width - qr_image.size[0]) / 2), int((height/2.5 + qr_image.size[0] - 30) / 2)
         image.paste(qr_image, qr_image_offset)
         image.paste(text_image, (0, 0))
 
