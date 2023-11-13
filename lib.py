@@ -16,7 +16,8 @@ dict_replace = {"trial": "Trial",
                 "labID": "Lab ID",
                 "variety": "Variety",
                 "pop": "Population",
-                "date": "Date"}
+                "date": "Date",
+                "planting_dates": "Planting Dates"}
 
 IMG_PATH = "./mizzouLogo.png"
 class BagCode:
@@ -71,7 +72,7 @@ class BagCode:
         code_dict = {}
         code_list = alphanumeric_code.split("; ")
         for code in code_list:
-            key, value = code.split("_")
+            key, value = code.split("_", 1)
             code_dict[key] = value
         return code_dict
 
@@ -80,9 +81,9 @@ class BagCode:
             "./Arial Black.ttf", font_body_size)
         for key, value in code.items():
             key = dict_replace[key]
-            value = value.capitalize()
-            image.text((10, y_text), key, fill="black", font=font_body)
-            image.text((width // 2, y_text), value, fill="black", font=font_body)
+            value = value.upper() if value not in dict_replace else dict_replace[value]
+            image.text((6, y_text), key, fill="black", font=font_body)
+            image.text((width // 2 - 4, y_text), value, fill="black", font=font_body)
             y_text += font_body_size + line_spacing
         return image
 
@@ -109,7 +110,7 @@ class BagCode:
         text_image = self.__make_text_image(self.alphanumeric_code, width, int(height/2.5))
 
         image.paste(background_image, (0, 0))
-        qr_image_offset = int((width - qr_image.pixel_size) / 2), int((height/2.5 + qr_image.pixel_size) / 2)
+        qr_image_offset = int((width - qr_image.pixel_size) / 2), int((height/2.5 + qr_image.pixel_size - 30) / 2)
         image.paste(qr_image, qr_image_offset)
         image.paste(text_image, (0, 0))
 
