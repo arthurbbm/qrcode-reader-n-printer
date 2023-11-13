@@ -81,7 +81,7 @@ class BagCode:
             "./Arial Black.ttf", font_body_size)
         for key, value in code.items():
             key = dict_replace[key]
-            value = value.upper() if value not in dict_replace else dict_replace[value]
+            value = value.capitalize() if value not in dict_replace else dict_replace[value]
             image.text((6, y_text), key, fill="black", font=font_body)
             image.text((width // 2 - 4, y_text), value, fill="black", font=font_body)
             y_text += font_body_size + line_spacing
