@@ -3,6 +3,9 @@ from qrcode.image.styledpil import StyledPilImage
 from qrcode.image.styles.moduledrawers.pil import RoundedModuleDrawer
 from tempfile import SpooledTemporaryFile, NamedTemporaryFile
 from PIL import Image, ImageWin, ImageDraw, ImageFont
+import datetime
+import os
+import csv
 import win32print
 import win32ui
 import win32con
@@ -20,9 +23,36 @@ dict_replace = {"trial": "Trial",
                 "planting_dates": "Planting Dates"}
 
 IMG_PATH = "./mizzouLogo.png"
+
+def create_csv_in_folder(folder_path):
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    current_datetime = datetime.datetime.now()
+    filename = current_datetime.strftime("%Y-%m-%d_%H-%M-%S.csv")
+    full_path = os.path.join(folder_path, filename)
+
+    data = [["Date", "Time", "Code"]]
+
+    with open(full_path, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    print(f"CSV file created at {full_path}")
+    return full_path
 class BagCode:
     def scan_qr_image(self):
         self.alphanumeric_code = input()
+
+    def write_to_csv(self, file_path):
+        current_datetime = datetime.datetime.now()
+        date = current_datetime.strftime("%Y-%m-%d")
+        time = current_datetime.strftime("%H:%M:%S")
+        data = [[date, time, self.alphanumeric_code]]
+
+        with open(file_path, mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
 
     def print_qr_sticker(self, file):
         image = Image.open(file)
@@ -108,7 +138,6 @@ class BagCode:
         background_image = self.__make_background_image(width, height)
         qr_image = self.__make_qr_image(self.alphanumeric_code)
         qr_image = qr_image.resize((int(216 * 0.9), int(216 * 0.9)))
-
         text_image = self.__make_text_image(self.alphanumeric_code, width, int(height/2.5))
 
         image.paste(background_image, (0, 0))
